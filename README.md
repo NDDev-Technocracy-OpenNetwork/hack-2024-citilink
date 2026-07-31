@@ -1,4 +1,9 @@
 # Нейроконсультант
+
+> **DEPRECATED.** This repository is archived and no longer maintained.
+> It is kept read-only for reference; its GDS anchor records
+> `lifecycle: archived` under `portfolio:archived-projects`.
+
 ## Полуавтоматическая платформа для онлнайн-маркетплейсов
 ### Структура репозитория
 Файлы соответствуют инструментам для сотрудника маркетплейса:
