@@ -1,0 +1,14 @@
+name: Check local demo
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  clients:
+    uses: NDDev-Technocracy-OpenNetwork/ci-workflows/.github/workflows/python-ci.yml@93eeb2a65e98a29e9dbff7909f67c6419abff046
+    with:
+      python_version: '3.12'
+      uv_version: '0.12.23'
+      install_command: uv pip install --system -r requirements.txt
+      test_command: python -m unittest discover -s tests -v

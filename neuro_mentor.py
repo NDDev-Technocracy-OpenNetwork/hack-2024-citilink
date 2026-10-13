@@ -13,12 +13,17 @@ st.markdown(hide_streamlit_footer, unsafe_allow_html=True)
 private_key = os.environ.get('yagptkey', '')
 url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
 data = {}
-data["modelUri"] = "gpt://b1g60k1kva2jrejf255o/yandexgpt-lite/rc"
-data["copleteionOptions"] = {"stream": False, "temprature": 0.3, "maxTokens": 1000}
+data["completionOptions"] = {"stream": False, "temperature": 0.3, "maxTokens": "1000"}
 
 
 def get_ya_gpt(input_text: str) -> str:
-    data["messages"] = [
+    folder = os.environ.get("YANDEX_FOLDER_ID") or os.environ.get("folderid", "")
+    key = os.environ.get("YANDEX_API_KEY", "")
+    token = os.environ.get("YANDEX_IAM_TOKEN") or os.environ.get("yagptkey", "")
+    if not folder or not (key or token):
+        raise RuntimeError("Configure YANDEX_FOLDER_ID and YANDEX_API_KEY or YANDEX_IAM_TOKEN.")
+    payload = {**data, "modelUri": f"gpt://{folder}/yandexgpt-lite/latest"}
+    payload["messages"] = [
         {
             "role": "system",
             "text": """Ты — специалист, помогающий сотрудникам онлайн интернет магазина техники помочь с работой,
@@ -31,12 +36,13 @@ def get_ya_gpt(input_text: str) -> str:
     ]
     try:
         response = requests.post(
-            url, headers={"Authorization": "Bearer " + private_key}, json=data
-        ).json()
-        answer = response["result"]["alternatives"][0]["text"]
+            url, headers={"Authorization": f"Api-Key {key}" if key else f"Bearer {token}"},
+            json=payload, timeout=(10, 60)
+        )
+        response.raise_for_status()
+        answer = response.json()["result"]["alternatives"][0]["message"]["text"]
     except Exception as e:
-        print(e)
-        answer = "Ошибка при обработке запроса"
+        raise RuntimeError("YandexGPT request failed; check account configuration and quota.") from None
     return answer
 
 
@@ -52,8 +58,11 @@ def ya_gpt_interface() -> None:
         space, right_col = st.columns([5, 2])
         with right_col:
             if st.button('Отправить запрос'):
-                with st.spinner():
-                    answer = get_ya_gpt(input_)
+                try:
+                    with st.spinner():
+                        answer = get_ya_gpt(input_)
+                except RuntimeError as error:
+                    st.error(str(error))
 
     if answer:
         st.write('\n')  # add spacing
