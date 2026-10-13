@@ -3,7 +3,7 @@
 
 Citilink 2024 hackathon prototype: AI product search, employee onboarding and marketplace description generation. Python + YandexGPT.
 
-[NDDev OpenNetwork](https://github.com/NDDev-Technocracy-OpenNetwork) · [Repository](https://github.com/NDDev-Technocracy-OpenNetwork/hack-2024-citilink)
+[NDDev OpenNetwork](https://github.com/NDDev-Technocracy-OpenNetwork) · [Repository](https://github.com/rldyourmnd/hack-2024-citilink)
 
 This repository is a hackathon prototype or supporting tool. Follow the project-specific setup below; cloud integrations require your own configuration and credentials.
 
