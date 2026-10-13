@@ -33,20 +33,33 @@ filter_query = " | ".join([f"site:{url}" for url in filters])
 
 
 def get_search_results(input_text: str) -> list[str]:
-
+    folder = os.environ.get("YANDEX_FOLDER_ID") or os.environ.get("folderid", "")
+    key = os.environ.get("YANDEX_SEARCH_API_KEY") or os.environ.get("searchapikey", "")
+    if not folder or not key:
+        raise RuntimeError("Configure YANDEX_FOLDER_ID and YANDEX_SEARCH_API_KEY.")
     query_params = {
-        "folderid": os.environ.get("folderid"),
-        "apikey": private_key,
+        "folderid": folder,
+        "apikey": key,
         "query": input_text + f"({filter_query})",
     }
     try:
-        search_response = requests.get(url, params=query_params)
+        search_response = requests.get(url, params=query_params, timeout=(10, 30))
+        search_response.raise_for_status()
         search_response = xmltodict.parse(search_response.text)
-        print(search_response)
-        urls = [group['doc']['url'] for group in search_response['yandexsearch']['response']['results']['grouping']['group']]
-    except Exception as e:
-        print(e)  # logs.debug(e)...
+        result = search_response['yandexsearch']['response']
+        if 'error' in result:
+            raise RuntimeError("Yandex Search rejected the request.")
+        groups = result.get('results', {}).get('grouping', {}).get('group', [])
+        if isinstance(groups, dict):
+            groups = [groups]
         urls = []
+        for group in groups:
+            docs = group.get('doc', [])
+            if isinstance(docs, dict):
+                docs = [docs]
+            urls.extend(doc['url'] for doc in docs if 'url' in doc)
+    except Exception as e:
+        raise RuntimeError("Yandex Search failed; check account configuration and quota.") from None
     return urls
 
 
@@ -62,8 +75,11 @@ def ya_search_interface() -> None:
         space, right_col = st.columns([5, 2])
         with right_col:
             if st.button('Отправить запрос'):
-                with st.spinner():
-                    answer = get_search_results(input_)
+                try:
+                    with st.spinner():
+                        answer = get_search_results(input_)
+                except RuntimeError as error:
+                    st.error(str(error))
 
     if answer:
         st.write('\n')  # add spacing

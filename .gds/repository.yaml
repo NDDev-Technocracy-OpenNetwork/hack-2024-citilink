@@ -1,37 +1,45 @@
 schema_version: 1
 repository:
-  id: "repo_01KYVP7474K4Q45MST4VBB1CAK"
-  display_name: "hack-2024-citilink"
+  id: repo_01KYVP7474K4Q45MST4VBB1CAK
+  display_name: hack-2024-citilink
   roles:
-    - "project"
-  lifecycle: "archived"
+  - project
+  lifecycle: active
 provider:
-  type: "github"
-  installation: "installation:github-personal"
+  type: github
+  installation: installation:github-nddev-technocracy-opennetwork
   repository_id: 815074617
-  owner: "rldyourmnd"
-  name: "hack-2024-citilink"
+  owner: NDDev-Technocracy-OpenNetwork
+  name: hack-2024-citilink
+  aliases:
+  - owner: rldyourmnd
+    name: hack-2024-citilink
+  - owner: NDDev-Technocracy-Archive
+    name: hack-2024-citilink
 classification:
   portfolios:
-    - "portfolio:archived-projects"
-  visibility_contract: "public"
-  data_classification: "public"
+  - portfolio:nddev-technocracy-opennetwork
+  visibility_contract: public
+  data_classification: public
 policy:
   profiles:
-    - "repository-default"
-    - "personal-default"
-  rollout_ring: "standard"
+  - repository-default
+  - organization-default
+  rollout_ring: standard
 git:
-  default_branch: "main"
-  integration: "pull-request"
-  branch_model: "task-branches"
-  handoff_pr: "never"
-  cleanup: "manual"
+  default_branch: main
+  integration: pull-request
+  branch_model: task-branches
+  handoff_pr: never
+  cleanup: manual
 agent:
-  context_profile: "project-default"
+  context_profile: project-default
   generated_agents: false
   serena:
     enabled: false
     provenance_required: false
 release:
-  mode: "none"
+  mode: none
+product:
+  purpose: 'Citilink 2024 hackathon prototype: AI product search, employee onboarding
+    and marketplace description generation. Python + YandexGPT.'
