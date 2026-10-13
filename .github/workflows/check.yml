@@ -10,5 +10,5 @@ jobs:
     with:
       python_version: '3.12'
       uv_version: '0.12.23'
-      install_command: uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
+      install_command: uv pip install -r requirements.txt
       test_command: ".venv/bin/python -m unittest discover -s tests -v"
